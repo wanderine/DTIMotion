@@ -44,9 +44,9 @@ for bfactor = 1:4
         Rotation_matrices = zeros(st,9);
         
         if motion == 1
-            factor = 0.5; % standard deviation for random translations and rotations
+            factor = 0.015; % standard deviation for random translations and rotations
         elseif motion == 2
-            factor = 0.1; % standard deviation for random translations and rotations
+            factor = 0.01; % standard deviation for random translations and rotations
         end
         
         [xi, yi, zi] = meshgrid(-(sx-1)/2:(sx-1)/2,-(sy-1)/2:(sy-1)/2, -(sz-1)/2:(sz-1)/2);
