@@ -44,9 +44,11 @@ for bfactor = 1:4
         Rotation_matrices = zeros(st,9);
         
         if motion == 1
-            factor = 0.015; % standard deviation for random translations and rotations
+            matrixfactor = 0.015; % standard deviation for random translations and rotations
+            translationfactor = 0.4;
         elseif motion == 2
-            factor = 0.01; % standard deviation for random translations and rotations
+            matrixfactor = 0.01; % standard deviation for random translations and rotations
+            translationfactor = 0.2;
         end
         
         [xi, yi, zi] = meshgrid(-(sx-1)/2:(sx-1)/2,-(sy-1)/2:(sy-1)/2, -(sz-1)/2:(sz-1)/2);
@@ -61,16 +63,16 @@ for bfactor = 1:4
             middle_z = (sz-1)/2;
             
             % Translation in 3 directions
-            x_translation = factor*randn; % voxels
-            y_translation = factor*randn; % voxels
-            z_translation = factor*randn; % voxels
+            x_translation = translationfactor*randn; % voxels
+            y_translation = translationfactor*randn; % voxels
+            z_translation = translationfactor*randn; % voxels
             
             x_translations(t) = x_translation;
             y_translations(t) = y_translation;
             z_translations(t) = z_translation;
             
             Rotation_matrix = [1 0 0; 0 1 0; 0 0 1];
-            Rotation_matrix = Rotation_matrix + randn(3,3)*factor;
+            Rotation_matrix = Rotation_matrix + randn(3,3)*matrixfactor;
             Rotation_matrix = Rotation_matrix(:);
             Rotation_matrices(t,:) = Rotation_matrix(:);
             

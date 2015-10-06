@@ -46,7 +46,7 @@ for bfactor = 1:4
         z_rotations = zeros(st,1);        
         
         if motion == 1
-            factor = 0.5; % standard deviation for random translations and rotations
+            factor = 0.4; % standard deviation for random translations and rotations
         elseif motion == 2
             factor = 0.1; % standard deviation for random translations and rotations
         end
