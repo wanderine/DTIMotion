@@ -29,7 +29,7 @@ for bfactor = 1:4
     st = 100;
     
     %%
-    % Create random transformations, for testing
+    % Create random affine transformations, for testing
     
     for motion = 1:2
         
@@ -41,14 +41,14 @@ for bfactor = 1:4
         y_translations = zeros(st,1);
         z_translations = zeros(st,1);
         
-        x_rotations = zeros(st,1);
-        y_rotations = zeros(st,1);
-        z_rotations = zeros(st,1);        
+        Rotation_matrices = zeros(st,9);
         
         if motion == 1
-            factor = 0.5; % standard deviation for random translations and rotations
+            matrixfactor = 0.015; % standard deviation for random translations and rotations
+            translationfactor = 0.4;
         elseif motion == 2
-            factor = 0.1; % standard deviation for random translations and rotations
+            matrixfactor = 0.01; % standard deviation for random translations and rotations
+            translationfactor = 0.2;
         end
         
         [xi, yi, zi] = meshgrid(-(sx-1)/2:(sx-1)/2,-(sy-1)/2:(sy-1)/2, -(sz-1)/2:(sz-1)/2);
@@ -56,44 +56,25 @@ for bfactor = 1:4
         % Loop over timepoints
         for t = 2:st
             
+            t
+            
             middle_x = (sx-1)/2;
             middle_y = (sy-1)/2;
             middle_z = (sz-1)/2;
             
             % Translation in 3 directions
-            x_translation = factor*randn; % voxels
-            y_translation = factor*randn; % voxels
-            z_translation = factor*randn; % voxels
+            x_translation = translationfactor*randn; % voxels
+            y_translation = translationfactor*randn; % voxels
+            z_translation = translationfactor*randn; % voxels
             
             x_translations(t) = x_translation;
             y_translations(t) = y_translation;
             z_translations(t) = z_translation;
             
-            % Rotation in 3 directions
-            x_rotation = factor*randn; % degrees
-            y_rotation = factor*randn; % degrees
-            z_rotation = factor*randn; % degrees
-            
-            x_rotations(t) = x_rotation;
-            y_rotations(t) = y_rotation;
-            z_rotations(t) = z_rotation;
-            
-            % Create rotation matrices around the three axes
-            
-            R_x = [1                        0                           0;
-                0                        cos(x_rotation*pi/180)      -sin(x_rotation*pi/180);
-                0                        sin(x_rotation*pi/180)      cos(x_rotation*pi/180)];
-            
-            R_y = [cos(y_rotation*pi/180)   0                           sin(y_rotation*pi/180);
-                0                        1                           0;
-                -sin(y_rotation*pi/180)  0                           cos(y_rotation*pi/180)];
-            
-            R_z = [cos(z_rotation*pi/180)   -sin(z_rotation*pi/180)     0;
-                sin(z_rotation*pi/180)   cos(z_rotation*pi/180)      0;
-                0                        0                           1];
-            
-            Rotation_matrix = R_x * R_y * R_z;
+            Rotation_matrix = [1 0 0; 0 1 0; 0 0 1];
+            Rotation_matrix = Rotation_matrix + randn(3,3)*matrixfactor;
             Rotation_matrix = Rotation_matrix(:);
+            Rotation_matrices(t,:) = Rotation_matrix(:);
             
             rx_r = zeros(sy,sx,sz);
             ry_r = zeros(sy,sx,sz);
@@ -129,9 +110,9 @@ for bfactor = 1:4
         new_file.hdr.dime.bitpix = 32;
         new_file.img = single(generated_DTI_volumes);
         if motion == 1
-            filename = ['data/b' bstring '_with_large_random_motion.nii'];
+            filename = ['data/b' bstring '_with_large_affine_motion.nii'];
         else
-            filename = ['data/b' bstring '_with_small_random_motion.nii'];
+            filename = ['data/b' bstring '_with_small_affine_motion.nii'];
         end
         save_untouch_nii(new_file,filename);
         
@@ -139,11 +120,11 @@ for bfactor = 1:4
         
         %filename='b1000_true_small_motion_parameters';
         if motion == 1
-            filename=['data/b' bstring '_true_large_motion_parameters'];
+            filename=['data/b' bstring '_true_large_affine_parameters'];
         else
-            filename=['data/b' bstring '_true_small_motion_parameters'];
+            filename=['data/b' bstring '_true_small_affine_parameters'];
         end
-        save(filename,'x_translations','y_translations','z_translations','x_rotations','y_rotations','z_rotations');
+        save(filename,'x_translations','y_translations','z_translations','Rotation_matrices');
         
     end
     
