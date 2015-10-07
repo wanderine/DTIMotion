@@ -28,26 +28,24 @@ original_volume = double(data.img);
 % FSL 
 %-------------------------------------------------------------------
 
-% data = load_untouch_nii(['FSL/b1000_with_small_affine_motion_eddy.nii.gz']);
-% FSL_corrected_volumes = double(data.img);
-% 
-% FSL_error = 0;
-% 
-% for t = 1:st
-%     volume = FSL_corrected_volumes(:,:,:,t);
-%     FSL_error = FSL_error + sum((volume(:) - original_volume(:)).^2);    
-% end
-%FSL_error/(sx*sy*sz*st)
+data = load_untouch_nii(['data/b' bstring '_with_small_affine_motion_eddy.nii.gz']);
+FSL_corrected_volumes = double(data.img);
+
+FSL_error = 0;
+for t = 1:st
+    volume = FSL_corrected_volumes(:,:,:,t);
+    FSL_error = FSL_error + sum((volume(:) - original_volume(:)).^2);    
+end
+FSL_error/(sx*sy*sz*st)
 
 %-------------------------------------------------------------------
 % BROCCOLI 
 %-------------------------------------------------------------------
 
-data = load_untouch_nii(['data/b1000_with_small_affine_motion_aligned_linear.nii']);
+data = load_untouch_nii(['data/b' bstring '_with_small_affine_motion_aligned_linear.nii']);
 BROCCOLI_corrected_volumes = double(data.img);
 
 BROCCOLI_error = 0;
-
 for t = 1:st
     volume = BROCCOLI_corrected_volumes(:,:,:,t);
     %figure(1)
