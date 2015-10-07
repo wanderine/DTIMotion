@@ -50,8 +50,8 @@ for t = 1:st
     volume = BROCCOLI_corrected_volumes(:,:,:,t);
     %figure(1)
     %imagesc((volume(:,:,50) - original_volume(:,:,50)) / max(original_volume(:)) ); colormap gray; colorbar; drawnow
-    BROCCOL_error = BROCCOLI_error + sum((volume(:) - original_volume(:)).^2);    
+    BROCCOLI_error = BROCCOLI_error + sum((volume(:) - original_volume(:)).^2);    
 end
-BROCCOL_error/(sx*sy*sz*st)
+BROCCOLI_error/(sx*sy*sz*st)
 
 
