@@ -7,8 +7,8 @@ addpath('/home/andek/Research_projects/spm8/')
 data_path = '/home/andek/Research_projects/DTIMotion/SPM';
 results_directory = '/home/andek/Research_projects/DTIMotion/SPM/';
 
-bstring = '1000';
-motion = 'large';
+bstring = '3000';
+motion = 'small';
 
 try
     system(['rm' ' batch_preprocessing.mat']);
@@ -33,8 +33,8 @@ for s = 1:N
     clear pjobs
     pjobs{1}.util{1}.cdir.directory = cellstr(data_path);                      
     
-    filename = [data_path '/b' bstring '_with_' motion '_random_motion.nii'];    
-    subject = ['b' bstring '_with_' motion '_random_motion.nii']; 
+    filename = [data_path '/b' bstring '_with_' motion '_rigid_motion.nii'];    
+    subject = ['b' bstring '_with_' motion '_rigid_motion.nii']; 
     
     %% Motion correction settings
     

@@ -19,20 +19,17 @@ N = 1;
 
 voxel_size = 1.5;
 
-show_parameters = 1;       % Show the estimated parameters as plots or not, for SPM, FSL, AFNI and BROCCOLI
-show_errors = 0;           % Show the motion errors or not, for SPM, FSL, AFNI and BROCCOLI
+show_parameters = 0;       % Show the estimated parameters as plots or not, for SPM, FSL, AFNI and BROCCOLI
+show_errors = 1;           % Show the motion errors or not, for SPM, FSL, AFNI and BROCCOLI
 
-bstring = '10000';
-motion = 'large';
+bstring = '1000';
 
+amount = 'small';
 
-
-
-
-
+st = 200;
 
 %-----------------------------------------------------------------
-% SPM B-spline interpolation (default)
+% SPM 
 %-------------------------------------------------------------------
 
 errors_SPM = zeros(N,1);
@@ -45,7 +42,7 @@ for s = 1:N
     s
 
     % Load estimated motion parameters
-    fid = fopen([basepath_SPM '/rp_b' bstring '_with_' motion '_random_motion.txt']);
+    fid = fopen([basepath_SPM '/rp_b' bstring '_with_' amount '_rigid_motion.txt']);
     text = textscan(fid,'%f%f%f%f%f%f');
     fclose(fid);
 
@@ -67,10 +64,10 @@ for s = 1:N
     SPM_rotations_z = -rotz*180/pi;
 
     % Load true parameters
-    load([basepath_none '/b' bstring '_true_' motion '_motion_parameters.mat']);
+    load([basepath_none '/b' bstring '_true_' amount '_rigid_parameters.mat']);
 
     % Calculate errors
-    errors = zeros(100,6);
+    errors = zeros(st,6);
     errors(:,1) = SPM_translations_x - x_translations;
     errors(:,2) = SPM_translations_y - y_translations;
     errors(:,3) = SPM_translations_z - z_translations;
@@ -84,7 +81,7 @@ end
 
 
 %-----------------------------------------------------------------
-% FSL Linear interpolation (default)
+% FSL 
 %-------------------------------------------------------------------
 
 errors_FSL = zeros(N,1);
@@ -93,7 +90,7 @@ errors_FSL = zeros(N,1);
 for s = 1:N
 
     % Load estimated motion parameters
-    fid = fopen([basepath_FSL '/b' bstring '_with_' motion '_random_motion_mcf.par']);
+    fid = fopen([basepath_FSL '/b' bstring '_with_' amount '_rigid_motion_mcf.par']);
     text = textscan(fid,'%f%f%f%f%f%f');
     fclose(fid);
 
@@ -114,10 +111,10 @@ for s = 1:N
     FSL_rotations_z = rotz*180/pi;
 
     % Load true parameters
-    load([basepath_none '/b' bstring '_true_' motion '_motion_parameters.mat']);
+    load([basepath_none '/b' bstring '_true_' amount '_rigid_parameters.mat']);
 
     % Calculate errors
-    errors = zeros(100,6);
+    errors = zeros(st,6);
     errors(:,1) = FSL_translations_x - x_translations;
     errors(:,2) = FSL_translations_y - y_translations;
     errors(:,3) = FSL_translations_z - z_translations;
@@ -133,7 +130,7 @@ end
 
 
 %-----------------------------------------------------------------------
-% AFNI Fourier interpolation (default)
+% AFNI 
 %-------------------------------------------------------------------
 
 errors_AFNI = zeros(N,1);
@@ -142,7 +139,7 @@ errors_AFNI = zeros(N,1);
 for s = 1:N
 
     % Load estimated motion parameters
-    fid = fopen([basepath_AFNI '/b' bstring '_with_' motion '_random_motion_motionparameters.1D']);
+    fid = fopen([basepath_AFNI '/b' bstring '_with_' amount '_rigid_motion_motionparameters.1D']);
     text = textscan(fid,'%f%f%f%f%f%f');
     fclose(fid);
 
@@ -163,10 +160,10 @@ for s = 1:N
     AFNI_rotations_z = roll;
 
     % Load true parameters
-    load([basepath_none '/b' bstring '_true_' motion '_motion_parameters.mat']);
+    load([basepath_none '/b' bstring '_true_' amount '_rigid_parameters.mat']);
 
     % Calculate errors
-    errors = zeros(100,6);
+    errors = zeros(st,6);
     errors(:,1) = AFNI_translations_x - x_translations;
     errors(:,2) = AFNI_translations_y - y_translations;
     errors(:,3) = AFNI_translations_z - z_translations;
@@ -181,7 +178,7 @@ end
 
 
 %-------------------------------------------------------------------
-% BROCCOLI Linear interpolation (default)
+% BROCCOLI 
 %-------------------------------------------------------------------
 
 errors_BROCCOLI = zeros(N,1);
@@ -189,7 +186,7 @@ errors_BROCCOLI = zeros(N,1);
 for s = 1:N
     
     % Load estimated motion parameters
-    fid = fopen([basepath_BROCCOLI '/b' bstring '_with_' motion '_random_motion_motionparameters.1D']);
+    fid = fopen([basepath_BROCCOLI '/b' bstring '_with_' amount '_rigid_motion_motionparameters.1D']);
     text = textscan(fid,'%f%f%f%f%f%f');
     fclose(fid);
     
@@ -209,10 +206,10 @@ for s = 1:N
     BROCCOLI_rotations_z = -yaw;
     
     % Load true parameters
-    load([basepath_none '/b' bstring '_true_' motion '_motion_parameters.mat']);
+    load([basepath_none '/b' bstring '_true_' amount '_rigid_parameters.mat']);
     
     % Calculate errors
-    errors = zeros(100,6);
+    errors = zeros(st,6);
     errors(:,1) = BROCCOLI_translations_x - x_translations;
     errors(:,2) = BROCCOLI_translations_y - y_translations;
     errors(:,3) = BROCCOLI_translations_z - z_translations;
@@ -229,12 +226,6 @@ FSL_meanerror = mean(errors_FSL)
 AFNI_meanerror = mean(errors_AFNI)
 BROCCOLI_meanerror = mean(errors_BROCCOLI)
 
-% SPM_Linear_std = std(errors_SPM_Linear)
-% SPM_Spline_std = std(errors_SPM_Spline)
-% FSL_std = std(errors_FSL)
-%AFNI_std = std(errors_AFNI)
-%BROCCOLI_std = std(errors_BROCCOLI)
-
 % Plot estimated parameters for SPM, FSL, AFNI och BROCCOLI
 if show_parameters == 1
         
@@ -243,7 +234,7 @@ if show_parameters == 1
     %-----------------
     
     % Load true parameters
-    load([basepath_none '/b' bstring '_true_' motion '_motion_parameters.mat']);
+    load([basepath_none '/b' bstring '_true_' amount '_rigid_parameters.mat']);
     
     figure(1)
     subplot(3,1,1)

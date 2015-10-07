@@ -4,10 +4,14 @@ clc
 
 addpath('/home/andek/Research_projects/nifti_matlab/')
 
-directions = 5;
+addpath('/home/andek/Research_projects/kerngen/')
+addpath('/home/andek/Research_projects/kerngen_old/')
+addpath('kerngen/')
+
+directions = 200;
 
 % Load mask
-mask = load_untouch_nii('data/mask.nii');
+mask = load_untouch_nii('data/mask_eroded2.nii');
 mask = double(mask.img);
 
 % Load DTI data
@@ -23,8 +27,11 @@ filter_responses = zeros([size(volume),directions]);
 disp('Calculating filter responses')
 for filter = 1:directions
     filter
-    filter_responses(:,:,:,filter) = real(convn(volume,getdata(f{filter}),'same')) + volume/10;
+    temp = real(convn(volume,getdata(f{filter}),'same')) .* mask * 1 + volume/30;
+    %temp = temp - min(temp(:));
+    filter_responses(:,:,:,filter) = abs(temp);
 end
+
 
 write = 1;
 
