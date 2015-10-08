@@ -26,12 +26,12 @@ for bfactor = 1:4
     voxel_size_z = data.hdr.dime.pixdim(4);
     
     [sy sx sz] = size(volume)
-    st = 100;
+    st = 200;
     
     %%
     % Create random affine transformations, for testing
     
-    for motion = 1:2
+    for motion = 2:2
         
         generated_DTI_volumes = zeros([size(volume),100]);
         generated_DTI_volumes(:,:,:,1) = volume;

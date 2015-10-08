@@ -33,7 +33,7 @@ for bfactor = 1:4
     
     for motion = 2:2
         
-        generated_DTI_volumes = zeros([size(volume),100]);
+        generated_DTI_volumes = zeros([size(volume),st]);
         generated_DTI_volumes(:,:,:,1) = volume;
         reference_volume = volume;
         
