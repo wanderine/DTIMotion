@@ -13,15 +13,14 @@ voxel_size_x = data.hdr.dime.pixdim(2);
 voxel_size_y = data.hdr.dime.pixdim(3);
 voxel_size_z = data.hdr.dime.pixdim(4);
 
-[sy sx sz] = size(volume)
-st = 200;
+[sy sx sz st] = size(volumes)
 
 %%
 % Create random rigid transformations, for testing
 
 for motion = 2:2
     
-    generated_DTI_volumes = zeros([size(volume),st]);
+    generated_DTI_volumes = zeros(size(volumes));
     generated_DTI_volumes(:,:,:,1) = volumes(:,:,:,1);
     
     x_translations = zeros(st,1);
