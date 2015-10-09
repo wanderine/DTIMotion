@@ -33,8 +33,11 @@ for s = 1:N
     clear pjobs
     pjobs{1}.util{1}.cdir.directory = cellstr(data_path);                      
     
-    filename = [data_path '/b' bstring '_with_' motion '_rigid_motion.nii'];    
-    subject = ['b' bstring '_with_' motion '_rigid_motion.nii']; 
+    %filename = [data_path '/b' bstring '_with_' motion '_rigid_motion.nii'];    
+    %subject = ['b' bstring '_with_' motion '_rigid_motion.nii']; 
+    
+    filename = [data_path '/simulated_directions_with_small_rigid_motion.nii'];    
+    subject = ['simulated_directions_with_small_rigid_motion.nii']; 
     
     %% Motion correction settings
     

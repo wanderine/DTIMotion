@@ -19,63 +19,70 @@ N = 1;
 
 voxel_size = 1.5;
 
-show_parameters = 0;       % Show the estimated parameters as plots or not, for SPM, FSL, AFNI and BROCCOLI
-show_errors = 1;           % Show the motion errors or not, for SPM, FSL, AFNI and BROCCOLI
+show_parameters = 1;       % Show the estimated parameters as plots or not, for SPM, FSL, AFNI and BROCCOLI
+show_errors = 0;           % Show the motion errors or not, for SPM, FSL, AFNI and BROCCOLI
 
 motion = 'small';
 
 st = 200;
 
-
 %-----------------------------------------------------------------
-% SPM B-spline interpolation (default)
+% SPM 
 %-------------------------------------------------------------------
 
-% errors_SPM = zeros(N,1);
-% 
-% dirs = dir([basepath_none]);
-% 
-% % Loop over subjects
-% for s = 1:N
-% 
-%     s
-% 
-%     % Load estimated motion parameters
-%     fid = fopen([basepath_SPM '/rp_b' bstring '_with_' motion '_random_motion.txt']);
-%     text = textscan(fid,'%f%f%f%f%f%f');
-%     fclose(fid);
-% 
-%     transx = text{1};
-%     transy = text{2};
-%     transz = text{3};
-% 
-%     rotx = text{4};
-%     roty = text{5};
-%     rotz = text{6};
-% 
-%     % Convert parameters to BROCCOLI coordinate system
-%     SPM_translations_x = transy/voxel_size;
-%     SPM_translations_y = transx/voxel_size;
-%     SPM_translations_z = -transz/voxel_size;
-% 
-%     SPM_rotations_x = -roty*180/pi;
-%     SPM_rotations_y = rotx*180/pi;
-%     SPM_rotations_z = -rotz*180/pi;
-% 
-%     % Load true parameters
-%     load([basepath_none '/b' bstring '_true_' motion '_motion_parameters.mat']);
-% 
-%     % Calculate errors
-%     errors = zeros(100,6);
-%     errors(:,1) = SPM_translations_x - x_translations;
-%     errors(:,2) = SPM_translations_y - y_translations;
-%     errors(:,3) = SPM_translations_z - z_translations;
-%     errors(:,4) = SPM_rotations_x - x_rotations;
-%     errors(:,5) = SPM_rotations_y - y_rotations;
-%     errors(:,6) = SPM_rotations_z - z_rotations;
-% 
-%     errors_SPM(s) = sqrt(sum(sum(errors.^2)));
-% end
+errors_SPM = zeros(N,1);
+
+dirs = dir([basepath_none]);
+
+% Loop over subjects
+for s = 1:N
+
+    s
+
+    % Load estimated motion parameters
+    fid = fopen([basepath_SPM '/rp_simulated_directions_with_small_rigid_motion.txt']);
+    text = textscan(fid,'%f%f%f%f%f%f');
+    fclose(fid);
+
+    transx = text{1};
+    transy = text{2};
+    transz = text{3};
+
+    rotx = text{4};
+    roty = text{5};
+    rotz = text{6};
+
+    % Convert parameters to BROCCOLI coordinate system
+    SPM_translations_x = transy/voxel_size;
+    SPM_translations_y = transx/voxel_size;
+    SPM_translations_z = -transz/voxel_size;
+
+    SPM_rotations_x = -roty*180/pi;
+    SPM_rotations_y = rotx*180/pi;
+    SPM_rotations_z = -rotz*180/pi;
+
+    % Load true parameters
+    load([basepath_none '/simulated_directions_true_small_rigid_parameters.mat']);
+
+    % Calculate errors
+    errors = zeros(st,6);
+    errors(:,1) = SPM_translations_x - x_translations;
+    errors(:,2) = SPM_translations_y - y_translations;
+    errors(:,3) = SPM_translations_z - z_translations;
+    errors(:,4) = SPM_rotations_x - x_rotations;
+    errors(:,5) = SPM_rotations_y - y_rotations;
+    errors(:,6) = SPM_rotations_z - z_rotations;
+
+    errors_SPM(s) = sqrt(sum(sum(errors.^2)));
+    
+    SPM_translations_x_error = SPM_translations_x - x_translations;
+    SPM_translations_y_error = SPM_translations_y - y_translations;
+    SPM_translations_z_error = SPM_translations_z - z_translations;
+    
+    SPM_rotations_x_error = SPM_rotations_x - x_rotations;
+    SPM_rotations_y_error = SPM_rotations_y - y_rotations;
+    SPM_rotations_z_error = SPM_rotations_z - z_rotations;    
+end
 
 
 
@@ -242,7 +249,7 @@ for s = 1:N
     
 end
 
-%SPM_meanerror = mean(errors_SPM)
+SPM_meanerror = mean(errors_SPM)
 FSL_meanerror = mean(errors_FSL)
 AFNI_meanerror = mean(errors_AFNI)
 BROCCOLI_meanerror = mean(errors_BROCCOLI)
@@ -290,8 +297,8 @@ if show_parameters == 1
     
     figure(1)
     subplot(3,1,1)
-    %plot(SPM_translations_x,'c')
-    %hold on
+    plot(SPM_translations_x,'c')
+    hold on
     plot(FSL_translations_x,'r')
     hold on
     plot(AFNI_translations_x,'g')
@@ -306,8 +313,8 @@ if show_parameters == 1
     legend('SPM','FSL','AFNI','BROCCOLI','Ground truth')
     
     subplot(3,1,2)
-    %plot(SPM_translations_y,'c')
-    %hold on
+    plot(SPM_translations_y,'c')
+    hold on
     plot(FSL_translations_y,'r')
     hold on
     plot(AFNI_translations_y,'g')
@@ -322,8 +329,8 @@ if show_parameters == 1
     legend('SPM','FSL','AFNI','BROCCOLI','Ground truth')
     
     subplot(3,1,3)
-    %plot(SPM_translations_z,'c')
-    %hold on
+    plot(SPM_translations_z,'c')
+    hold on
     plot(FSL_translations_z,'r')
     hold on
     plot(AFNI_translations_z,'g')
@@ -339,8 +346,8 @@ if show_parameters == 1
     
     figure(2)
     subplot(3,1,1)
-    %plot(SPM_rotations_x,'c')
-    %hold on
+    plot(SPM_rotations_x,'c')
+    hold on
     plot(FSL_rotations_x,'r')
     hold on
     plot(AFNI_rotations_x,'g')
@@ -355,8 +362,8 @@ if show_parameters == 1
     legend('SPM','FSL','AFNI','BROCCOLI','Ground truth')
     
     subplot(3,1,2)
-    %plot(SPM_rotations_y,'c')
-    %hold on
+    plot(SPM_rotations_y,'c')
+    hold on
     plot(FSL_rotations_y,'r')
     hold on
     plot(AFNI_rotations_y,'g')
@@ -371,8 +378,8 @@ if show_parameters == 1
     legend('SPM','FSL','AFNI','BROCCOLI','Ground truth')
     
     subplot(3,1,3)
-    %plot(SPM_rotations_z,'c')
-    %hold on
+    plot(SPM_rotations_z,'c')
+    hold on
     plot(FSL_rotations_z,'r')
     hold on
     plot(AFNI_rotations_z,'g')
@@ -394,8 +401,8 @@ if show_errors == 1
             
     figure(1)
     subplot(3,1,1)
-    %plot(SPM_translations_x_error,'c')
-    %hold on
+    plot(SPM_translations_x_error,'c')
+    hold on
     plot(FSL_translations_x_error,'r')
     hold on
     plot(AFNI_translations_x_error,'g')
@@ -408,8 +415,8 @@ if show_errors == 1
     legend('SPM error','FSL error','AFNI error','BROCCOLI error')
     
     subplot(3,1,2)
-    %plot(SPM_translations_y_error,'c')
-    %hold on
+    plot(SPM_translations_y_error,'c')
+    hold on
     plot(FSL_translations_y_error,'r')
     hold on
     plot(AFNI_translations_y_error,'g')
@@ -422,8 +429,8 @@ if show_errors == 1
     legend('SPM error','FSL error','AFNI error','BROCCOLI error')
     
     subplot(3,1,3)
-    %plot(SPM_translations_z_error,'c')
-    %hold on
+    plot(SPM_translations_z_error,'c')
+    hold on
     plot(FSL_translations_z_error,'r')
     hold on
     plot(AFNI_translations_z_error,'g')
@@ -437,8 +444,8 @@ if show_errors == 1
     
     figure(2)
     subplot(3,1,1)
-    %plot(SPM_rotations_x_error,'c')
-    %hold on
+    plot(SPM_rotations_x_error,'c')
+    hold on
     plot(FSL_rotations_x_error,'r')
     hold on
     plot(AFNI_rotations_x_error,'g')
@@ -451,8 +458,8 @@ if show_errors == 1
     legend('SPM error','FSL error','AFNI error','BROCCOLI error')
     
     subplot(3,1,2)
-    %plot(SPM_rotations_y_error,'c')
-    %hold on
+    plot(SPM_rotations_y_error,'c')
+    hold on
     plot(FSL_rotations_y_error,'r')
     hold on
     plot(AFNI_rotations_y_error,'g')
@@ -465,8 +472,8 @@ if show_errors == 1
     legend('SPM error','FSL error','AFNI error','BROCCOLI error')
     
     subplot(3,1,3)
-    %plot(SPM_rotations_z_error,'c')
-    %hold on
+    plot(SPM_rotations_z_error,'c')
+    hold on
     plot(FSL_rotations_z_error,'r')
     hold on
     plot(AFNI_rotations_z_error,'g')
